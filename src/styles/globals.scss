@@ -1,0 +1,16 @@
+@use "tokens";
+@use "base/reset";
+@use "base/typography";
+
+html {
+  background-color: var(--color-bg);
+}
+
+body {
+  overflow-x: clip;
+}
+
+::selection {
+  background-color: var(--color-text);
+  color: var(--color-bg);
+}

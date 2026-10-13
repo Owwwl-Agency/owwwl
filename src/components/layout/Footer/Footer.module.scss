@@ -1,0 +1,215 @@
+@use "abstracts" as *;
+
+.footer {
+  --fs-footer-title: #{fluid(32, 94)};
+
+  position: relative;
+  z-index: var(--z-footer);
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--color-paper);
+  border-top: 2px solid var(--color-onyx-05);
+
+  // A screen-sized layer that slides up over the page (see footerOverlay.ts).
+  @media (prefers-reduced-motion: no-preference) {
+    position: fixed;
+    inset: 0;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    visibility: hidden;
+    transform: translateY(100%);
+  }
+
+  // The page grain sits below the content, so the opaque footer carries its own.
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: url("../../../assets/images/noise.webp");
+    background-size: 512px 512px;
+    mix-blend-mode: luminosity;
+    opacity: 0.04;
+    pointer-events: none;
+  }
+}
+
+.container {
+  container-type: inline-size;
+  // Pushes the content to the bottom of the screen; `auto` still lets overflowing content scroll.
+  margin-top: auto;
+  padding: var(--header-height) fluid(20, 200) 0;
+}
+
+.title,
+.email {
+  display: block;
+  font-family: var(--ff-serif);
+  // The email has to stay on one line: 9% of the column keeps it inside on any width.
+  font-size: min(var(--fs-footer-title), 9cqi);
+  font-weight: 700;
+  line-height: 1.085;
+}
+
+.title {
+  color: var(--color-onyx);
+}
+
+.email {
+  width: fit-content;
+  margin-top: 8px;
+  color: transparent;
+  -webkit-text-stroke: 0.5px var(--color-sand);
+  white-space: nowrap;
+}
+
+// Reveal mask: clip vertically only so descenders and overhangs stay visible.
+.mask {
+  display: block;
+  overflow: visible clip;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+
+.maskInner {
+  @include hidden-before-reveal;
+
+  display: block;
+}
+
+.cta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  max-width: 32.75rem;
+  margin-top: fluid(32, 42);
+  margin-left: auto;
+
+  @include down("tablet") {
+    align-items: flex-start;
+    max-width: none;
+  }
+}
+
+.text {
+  @include hidden-before-reveal;
+
+  font-family: var(--ff-system);
+  font-size: fluid(18, 22);
+  font-weight: 100;
+  line-height: 1.59;
+  color: var(--color-onyx);
+
+  // Line break from the design: the block shrinks to its first line, so that line ends on the
+  // same edge as the "Start Your Project" link while both lines start together.
+  @include up("tablet") {
+    width: max-content;
+    max-width: 100%;
+  }
+}
+
+.textBreak {
+  @include down("tablet") {
+    display: none;
+  }
+}
+
+.project {
+  @include hidden-before-reveal;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 17px;
+}
+
+// The underline wipes out to the right on hover and draws back in from the left.
+.projectLabel {
+  position: relative;
+  padding-bottom: 3px;
+  font-family: var(--ff-serif);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #000;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background-color: currentColor;
+    transform-origin: left;
+    transition: transform var(--duration-base) var(--ease-out-expo);
+  }
+}
+
+.project:hover .projectLabel::after,
+.project:focus-visible .projectLabel::after {
+  transform: scaleX(0);
+  transform-origin: right;
+}
+
+.backToTop {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: fluid(56, 78);
+  font-family: var(--ff-serif);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--color-onyx-50);
+  cursor: pointer;
+}
+
+.backToTopIcon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--color-stone);
+  border-radius: var(--radius-circle);
+}
+
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 24px;
+  min-height: 63px;
+  margin-top: 16px;
+  border-top: 1px solid var(--color-onyx-05);
+  font-size: 14px;
+  line-height: 35px;
+  color: var(--color-onyx-70);
+
+  @include down("mobile") {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    padding-block: 12px;
+  }
+}
+
+.copyright {
+  font-family: var(--ff-system);
+}
+
+.socials {
+  display: flex;
+  gap: 18px;
+  font-family: var(--ff-serif);
+}
+
+.social {
+  transition: color var(--duration-fast) ease;
+
+  @include hover {
+    color: var(--color-onyx);
+  }
+}

@@ -1,0 +1,26 @@
+@use "../abstracts" as *;
+
+:root {
+  --design-width: 1440;
+
+  --header-height: 90px;
+  --gutter: #{fluid(20, 40)};
+  --container-max: 1440px;
+
+  --radius-pill: 80px;
+  --radius-circle: 50%;
+
+  --fs-display: #{fluid(34, 65)};
+  --fs-body: #{fluid(15, 17)};
+
+  --lh-display: 1.17;
+  --lh-body: 1.4;
+
+  --ls-body: 0.03em;
+
+  --z-bg: -1;
+  --z-header: 100;
+  --z-nav: 100;
+  --z-footer: 200;
+  --z-dialog: 300;
+}

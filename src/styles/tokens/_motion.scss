@@ -1,0 +1,9 @@
+:root {
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+
+  --duration-fast: 0.25s;
+  --duration-base: 0.5s;
+  --duration-slow: 0.9s;
+}

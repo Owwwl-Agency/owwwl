@@ -1,0 +1,64 @@
+@use "abstracts" as *;
+
+// --card-w and --card-ratio are defined on the Hero section.
+.card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: var(--layer);
+  width: var(--card-w);
+  margin-top: calc(var(--card-w) / (var(--card-ratio)) / -2);
+  margin-left: calc(var(--card-w) / -2);
+  visibility: hidden;
+  // Only the image reacts to the pointer: the figure box stays behind when the grid is panned,
+  // and the caption area should not trigger the hover.
+  pointer-events: none;
+  will-change: transform;
+}
+
+// Mouse panning of the grid; --pan-x/--pan-y are set on the Hero stage.
+// Kept on a wrapper GSAP never animates, since GSAP folds the `translate` property into its own transform.
+.inner {
+  transform: translate3d(var(--pan-x, 0px), var(--pan-y, 0px), 0);
+}
+
+.media {
+  position: relative;
+  pointer-events: auto;
+  aspect-ratio: var(--card-ratio);
+  overflow: hidden;
+  background-color: var(--color-ink-05);
+}
+
+.image {
+  object-fit: cover;
+  transform-origin: 50% 100%;
+}
+
+.caption {
+  // Design width (305px), but never wider than the card plus the grid gaps on both sides (40 / 305 each).
+  --caption-w: max(100%, min(19.0625rem, var(--card-w) * 385 / 305));
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: var(--caption-w);
+  margin-top: 10px;
+  margin-left: calc((100% - var(--caption-w)) / 2);
+  font-family: var(--ff-sans);
+  font-size: fluid(11, 12);
+  font-weight: 400;
+  line-height: 18px;
+  letter-spacing: var(--ls-body);
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  // Counter-scaled against the grid scale on short screens; keep it pinned under the image.
+  transform-origin: 50% 0;
+}
+
+// Line breaks come from the data; a line wider than a shrunk card overflows evenly on both sides.
+.captionLine {
+  display: block;
+  white-space: nowrap;
+}

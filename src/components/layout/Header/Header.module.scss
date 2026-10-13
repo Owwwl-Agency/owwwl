@@ -1,0 +1,17 @@
+.header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: var(--z-header);
+  display: flex;
+  justify-content: center;
+  height: var(--header-height);
+  padding-top: 30px;
+  pointer-events: none;
+}
+
+.logo {
+  display: block;
+  width: 100px;
+  height: 30px;
+  pointer-events: auto;
+}

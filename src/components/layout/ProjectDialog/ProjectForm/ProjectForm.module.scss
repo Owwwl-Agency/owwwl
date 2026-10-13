@@ -1,0 +1,234 @@
+@use "abstracts" as *;
+
+.form {
+  --field-text: var(--color-white);
+  --field-label: rgb(255 255 255 / 0.7);
+  --field-line: var(--color-ash);
+  --field-line-active: var(--color-linen);
+  --field-tracking: 0.1em;
+
+  color: var(--color-linen);
+
+  @include down("tablet") {
+    --field-tracking: 0.05em;
+  }
+}
+
+.section + .section {
+  margin-top: 48px;
+
+  @include down("tablet") {
+    margin-top: 78px;
+  }
+}
+
+.hiddenInput {
+  @include visually-hidden;
+}
+
+.heading {
+  margin-bottom: 30px;
+  font-family: var(--ff-system);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 20px;
+
+  @include down("tablet") {
+    gap: 13px 10px;
+  }
+}
+
+.option {
+  padding: 20px 30px;
+  border: 1px solid var(--color-ash);
+  border-radius: 50px;
+  font-family: var(--ff-serif);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0.1em;
+  color: var(--color-white);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-base) var(--ease-out-quart),
+    border-color var(--duration-base) var(--ease-out-quart),
+    color var(--duration-base) var(--ease-out-quart);
+
+  @include hover {
+    border-color: var(--color-linen);
+  }
+
+  &:has(:checked) {
+    border-color: var(--color-ash);
+    background-color: var(--color-linen);
+    color: var(--color-onyx);
+  }
+
+  &:has(:focus-visible) {
+    outline: 1px solid var(--color-linen);
+    outline-offset: 3px;
+  }
+
+  @include down("tablet") {
+    padding: 15px 18px;
+    border-radius: 30px;
+  }
+}
+
+.budget {
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--color-linen);
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 35px 20px;
+
+  @include down("tablet") {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 30px;
+  }
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.attach {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 40px;
+  padding: 20px 30px;
+  border: 1px solid var(--color-linen);
+  border-radius: 50px;
+  font-family: var(--ff-serif);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: var(--field-tracking);
+  cursor: pointer;
+  transition: background-color var(--duration-base) var(--ease-out-quart);
+
+  @include hover {
+    background-color: rgb(227 224 220 / 0.08);
+  }
+
+  &:has(:focus-visible) {
+    outline: 1px solid var(--color-linen);
+    outline-offset: 3px;
+  }
+
+  @include down("tablet") {
+    margin-top: 30px;
+    padding: 15px 20px;
+  }
+}
+
+.files {
+  margin-top: 12px;
+  font-family: var(--ff-system);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-ash);
+}
+
+.consents {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 48px;
+
+  @include down("tablet") {
+    margin-top: 28px;
+  }
+}
+
+.consent {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  font-family: var(--ff-system);
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 22px;
+  cursor: pointer;
+}
+
+.checkbox {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--color-iron);
+  border-radius: var(--radius-circle);
+  background-color: var(--color-white);
+  transition: background-color var(--duration-fast) ease;
+
+  img {
+    opacity: 0;
+    transform: scale(0.6);
+    transition:
+      opacity var(--duration-fast) ease,
+      transform var(--duration-base) var(--ease-out-expo);
+  }
+
+  .consent:has(:checked) & {
+    background-color: var(--color-linen);
+
+    img {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .consent:has(:focus-visible) & {
+    outline: 1px solid var(--color-linen);
+    outline-offset: 3px;
+  }
+}
+
+.actions {
+  margin-top: 50px;
+
+  @include down("tablet") {
+    margin-top: 30px;
+  }
+}
+
+.submit {
+  padding: 20px 30px;
+  border: 1px solid var(--color-ash);
+  border-radius: 10px;
+  background-color: var(--color-white);
+  font-family: var(--ff-serif);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  color: var(--color-onyx);
+  transition: background-color var(--duration-base) var(--ease-out-quart);
+
+  @include hover {
+    background-color: var(--color-linen);
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+
+  @include down("tablet") {
+    width: 100%;
+    padding-block: 15px;
+  }
+}

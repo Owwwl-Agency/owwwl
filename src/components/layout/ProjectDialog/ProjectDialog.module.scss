@@ -1,0 +1,368 @@
+@use "abstracts" as *;
+
+// Registered so the shared text color can transition between the dark and light tabs.
+@property --dialog-fg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #e3e0dc;
+}
+
+@property --dialog-notice {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #8d8c8c;
+}
+
+.dialog {
+  --dialog-switch: 1.2s;
+  --dialog-ease: cubic-bezier(0.65, 0, 0.35, 1);
+  --dialog-pad: #{fluid(20, 200)};
+  --dialog-fg: var(--color-linen);
+  --dialog-notice: var(--color-ash);
+
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-dialog);
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  background: none;
+  color: var(--dialog-fg);
+  transition:
+    --dialog-fg var(--dialog-switch) var(--dialog-ease),
+    --dialog-notice var(--dialog-switch) var(--dialog-ease);
+
+  &[data-theme="light"] {
+    --dialog-fg: var(--color-onyx);
+    --dialog-notice: var(--color-onyx);
+  }
+
+  &::backdrop {
+    background: none;
+  }
+
+  @include reduced-motion {
+    transition: none;
+  }
+}
+
+.stage {
+  position: absolute;
+  inset: 0;
+}
+
+// --- Backdrop
+
+.backdrop,
+.dark,
+.light {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.dark,
+.light {
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("../../../assets/images/noise.webp");
+    background-size: 512px 512px;
+    mix-blend-mode: luminosity;
+    pointer-events: none;
+  }
+}
+
+.dark {
+  background-color: var(--color-night);
+
+  &::before {
+    opacity: 0.1;
+  }
+}
+
+.light {
+  background-color: var(--color-paper);
+  clip-path: inset(0% 100% 0% 0%);
+
+  &::before {
+    opacity: 0.04;
+  }
+
+  .dialog[data-theme="light"] & {
+    clip-path: inset(0%);
+  }
+}
+
+// The glow images carry 400px of blur around the ellipse itself.
+.glow {
+  position: absolute;
+  top: -400px;
+  right: -400px;
+  width: 1350px;
+  max-width: none;
+  height: auto;
+
+  .light & {
+    top: -200px;
+  }
+
+  @include down("laptop") {
+    top: -109px;
+    right: -232px;
+    width: 783px;
+
+    .light & {
+      top: -109px;
+    }
+  }
+}
+
+// --- Header (stays in place while the content scrolls)
+
+.bar {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--header-height);
+  padding-inline: var(--dialog-pad);
+
+  @include down("laptop") {
+    padding-inline: rem(15);
+  }
+}
+
+.tabs {
+  display: flex;
+  gap: 23px;
+}
+
+.tab {
+  position: relative;
+  padding-bottom: 3px;
+  font-family: var(--ff-serif);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--color-ash);
+  white-space: nowrap;
+  transition: color var(--duration-base) ease;
+
+  // Underlines hand over between the tabs: the old one wipes out towards the new one.
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.6s var(--ease-in-out-quart);
+  }
+
+  & + &::after {
+    transform-origin: left;
+  }
+
+  &[aria-selected="true"] {
+    color: var(--dialog-fg);
+
+    &::after {
+      transform: scaleX(1);
+      transition-delay: 0.3s;
+    }
+  }
+
+  @include hover {
+    color: var(--dialog-fg);
+  }
+}
+
+.close {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  // Puts the cross itself on the content edge.
+  margin-right: -15px;
+  color: var(--dialog-fg);
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 2px;
+    margin: -1px 0 0 -10px;
+    border-radius: 2px;
+    background-color: currentColor;
+    transition: transform var(--duration-slow) var(--ease-out-expo);
+  }
+
+  &::before {
+    transform: rotate(45deg);
+  }
+
+  &::after {
+    transform: rotate(-45deg);
+  }
+
+  @include hover {
+    &::before {
+      transform: rotate(135deg);
+    }
+
+    &::after {
+      transform: rotate(45deg);
+    }
+  }
+}
+
+// --- Scrolling content
+
+.scroller {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--dialog-fg) 25%, transparent) transparent;
+  // Content fades out as it scrolls under the header.
+  mask-image: linear-gradient(to bottom, transparent 60px, #000 100px);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 160px var(--dialog-pad) 40px;
+
+  @include down("laptop") {
+    padding-top: 150px;
+    padding-bottom: 30px;
+  }
+}
+
+// Both tabs share one grid: aside | gap | middle | gap | aside. The form takes the left three
+// columns with the aside on the right; the scheduler takes the right three with the aside on the
+// left. Panels keep their columns while they swap, so only the aside travels.
+.layout {
+  --aside: 300px;
+  --gap: clamp(40px, 7vw, 100px);
+
+  display: grid;
+  grid-template-columns: var(--aside) var(--gap) minmax(0, 1fr) var(--gap) var(--aside);
+  align-items: start;
+
+  @include down("laptop") {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.aside {
+  position: relative;
+  z-index: 1;
+  grid-row: 1;
+  grid-column: 5;
+
+  .layout[data-tab="meet"] & {
+    grid-column: 1;
+  }
+
+  @include down("laptop") {
+    grid-column: 1;
+    margin-bottom: 80px;
+
+    // The later booking steps use the whole screen.
+    .layout[data-tab="meet"]:not([data-stage="date"]) & {
+      display: none;
+    }
+  }
+}
+
+.title {
+  max-width: 300px;
+  font-family: var(--ff-serif);
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 58px;
+}
+
+.lead {
+  margin-top: 30px;
+  font-family: var(--ff-system);
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 28px;
+}
+
+.link {
+  display: inline;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: from-font;
+  text-underline-position: from-font;
+  transition: opacity var(--duration-fast) ease;
+
+  @include hover {
+    opacity: 0.6;
+  }
+}
+
+.panel {
+  grid-row: 1;
+  min-width: 0;
+}
+
+.projectPanel {
+  grid-column: 1 / 4;
+}
+
+.meetPanel {
+  grid-column: 3 / 6;
+}
+
+.projectPanel,
+.meetPanel {
+  @include down("laptop") {
+    grid-row: 2;
+    grid-column: 1;
+  }
+}
+
+.notice {
+  margin-top: auto;
+  padding-top: 80px;
+}
+
+.noticeText {
+  padding-top: 40px;
+  border-top: 1px solid var(--color-ash-20);
+  font-family: var(--ff-system);
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 28px;
+  color: var(--dialog-notice);
+
+  .link {
+    color: var(--dialog-fg);
+  }
+
+  @include down("laptop") {
+    padding-top: 30px;
+  }
+}

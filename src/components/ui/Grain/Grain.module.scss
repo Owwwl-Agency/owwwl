@@ -1,0 +1,11 @@
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-bg);
+  background-image: url("../../../assets/images/noise.webp");
+  background-size: 512px 512px;
+  background-position: top left;
+  mix-blend-mode: luminosity;
+  opacity: 0.04;
+  pointer-events: none;
+}

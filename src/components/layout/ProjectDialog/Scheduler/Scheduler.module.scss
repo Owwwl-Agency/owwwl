@@ -1,0 +1,481 @@
+@use "abstracts" as *;
+
+.scheduler {
+  --field-text: var(--color-onyx);
+  --field-label: var(--color-onyx-70);
+  --field-line: var(--color-onyx-10);
+  --field-line-active: var(--color-onyx);
+  --field-tracking: 0.1em;
+
+  // The calendar header lines up with the "Schedule Meeting" cap height.
+  padding-top: 11px;
+  color: var(--color-onyx);
+
+  @include down("laptop") {
+    --field-tracking: 0.05em;
+
+    padding-top: 0;
+  }
+}
+
+.srOnly {
+  @include visually-hidden;
+}
+
+.heading {
+  margin-bottom: 30px;
+  font-family: var(--ff-system);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: normal;
+}
+
+// --- Back links (the compact layout walks through the steps one screen at a time)
+
+.back {
+  display: none;
+
+  @include down("laptop") {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    font-family: var(--ff-system);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: 0.05em;
+  }
+}
+
+.backItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0.7;
+}
+
+.backDivider {
+  width: 1px;
+  height: 18px;
+  background-color: var(--color-onyx-10);
+}
+
+.chevronLeft,
+.chevronRight {
+  flex-shrink: 0;
+}
+
+.chevronLeft {
+  rotate: -90deg;
+}
+
+.chevronRight {
+  rotate: 90deg;
+}
+
+// --- Date and time
+
+.picker {
+  display: grid;
+  grid-template-columns: minmax(0, 440px) 134px;
+  justify-content: space-between;
+  align-items: start;
+  column-gap: 24px;
+
+  @include down("laptop") {
+    display: block;
+  }
+}
+
+.calendar {
+  max-width: 440px;
+
+  @include down("laptop") {
+    .scheduler[data-stage="time"] & {
+      display: none;
+    }
+  }
+}
+
+.month {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 20px;
+  margin-bottom: 64px;
+
+  @include down("laptop") {
+    margin-bottom: 31px;
+  }
+}
+
+.monthNav {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin: -10px;
+  transition: opacity var(--duration-fast) ease;
+
+  &:disabled {
+    opacity: 0.2;
+    cursor: default;
+  }
+}
+
+.monthLabel {
+  font-family: var(--ff-system);
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+
+  @include down("laptop") {
+    font-size: 16px;
+  }
+}
+
+.weekdays,
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 15px;
+
+  @include down("laptop") {
+    gap: 10px;
+  }
+}
+
+.weekdays {
+  margin-bottom: 22px;
+  font-family: var(--ff-system);
+  font-size: 18px;
+  font-weight: 600;
+
+  span {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+  }
+
+  @include down("laptop") {
+    margin-bottom: 20px;
+    font-size: 16px;
+  }
+}
+
+.days {
+  animation: days-in var(--duration-slow) var(--ease-out-expo);
+
+  @include reduced-motion {
+    animation: none;
+  }
+}
+
+@keyframes days-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+.cell {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 4px;
+  border: 1px solid var(--color-onyx-10);
+  border-radius: 4px;
+  font-family: var(--ff-system);
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--color-onyx);
+  transition:
+    background-color var(--duration-base) var(--ease-out-quart),
+    border-color var(--duration-base) var(--ease-out-quart),
+    color var(--duration-base) var(--ease-out-quart);
+
+  &[data-today] {
+    border-color: var(--color-onyx);
+  }
+
+  &:disabled {
+    color: var(--color-onyx-10);
+    cursor: default;
+  }
+
+  &[aria-disabled] {
+    cursor: default;
+  }
+
+  &:not(:disabled, [aria-disabled]) {
+    @include hover {
+      border-color: var(--color-onyx);
+    }
+  }
+
+  &[aria-pressed="true"] {
+    border-color: var(--color-onyx);
+    background-color: var(--color-onyx);
+    color: var(--color-linen);
+  }
+
+  &:focus-visible {
+    outline: 1px solid var(--color-onyx);
+    outline-offset: 2px;
+  }
+}
+
+.time {
+  @include down("laptop") {
+    .scheduler[data-stage="date"] & {
+      display: none;
+    }
+  }
+}
+
+.slots {
+  display: grid;
+  grid-template-columns: repeat(2, 60px);
+  gap: 15px 14px;
+  margin-top: 22px;
+
+  @include down("laptop") {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    margin-top: 0;
+  }
+}
+
+.slot {
+  aspect-ratio: auto;
+  height: 50px;
+}
+
+// --- Clock
+
+.clock {
+  position: relative;
+  width: 134px;
+  height: 134px;
+
+  @include down("laptop") {
+    display: none;
+  }
+}
+
+.tick {
+  position: absolute;
+  top: 0;
+  left: calc(50% - 0.65px);
+  width: 1.3px;
+  height: 5.25px;
+  border-radius: 0.5px;
+  background-color: var(--color-onyx-10);
+  transform-origin: 50% 67px;
+  transform: rotate(calc(var(--tick) * 30deg));
+  transition: background-color var(--duration-base) ease;
+
+  &[data-active] {
+    background-color: var(--color-onyx);
+  }
+}
+
+.hourHand,
+.minuteHand {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  border-radius: 2px;
+  background-color: var(--color-onyx);
+  transform-origin: 50% 100%;
+}
+
+.hourHand {
+  width: 4.2px;
+  height: 33.6px;
+  margin-left: -2.1px;
+}
+
+.minuteHand {
+  width: 2.1px;
+  height: 48.7px;
+  margin-left: -1.05px;
+}
+
+.pin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6.12px;
+  height: 6.12px;
+  translate: -50% -50%;
+}
+
+// --- Details
+
+.details {
+  display: grid;
+  grid-template-columns: minmax(0, 440px) 140px;
+  justify-content: space-between;
+  align-items: start;
+  column-gap: 24px;
+
+  @include down("laptop") {
+    display: block;
+  }
+}
+
+.detailsForm {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 35px 40px;
+  width: 100%;
+
+  @include down("laptop") {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 30px;
+  }
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.guests {
+  margin-top: 10px;
+  font-family: var(--ff-serif);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 30px;
+  color: var(--color-slate);
+  transition: color var(--duration-fast) ease;
+
+  b {
+    font-weight: 700;
+  }
+
+  @include hover {
+    color: var(--color-onyx);
+  }
+}
+
+.guestsField {
+  width: 100%;
+  margin-top: 35px;
+
+  @include down("laptop") {
+    margin-top: 30px;
+  }
+}
+
+.description {
+  width: 100%;
+  margin-top: 35px;
+
+  @include down("laptop") {
+    margin-top: 30px;
+  }
+}
+
+.card {
+  display: none;
+
+  @include down("laptop") {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px 0;
+    width: 100%;
+    margin-top: 30px;
+    padding: 19px 15px;
+    border-radius: 10px;
+    background-color: var(--color-linen);
+  }
+}
+
+.summaryItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--ff-system);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+
+  // Icons keep full strength, the text is softened.
+  color: var(--color-onyx-70);
+}
+
+button.summaryItem {
+  text-align: left;
+  transition: color var(--duration-fast) ease;
+
+  @include hover {
+    color: var(--color-onyx);
+  }
+}
+
+.submit {
+  margin-top: 50px;
+  padding: 20px 30px;
+  border: 1px solid var(--color-onyx-10);
+  border-radius: 10px;
+  font-family: var(--ff-serif);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  color: var(--color-onyx);
+  transition:
+    background-color var(--duration-base) var(--ease-out-quart),
+    color var(--duration-base) var(--ease-out-quart);
+
+  @include hover {
+    background-color: var(--color-onyx);
+    color: var(--color-linen);
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+
+  @include down("laptop") {
+    width: 100%;
+    margin-top: 30px;
+    padding-block: 15px;
+    border-color: var(--color-ash);
+    background-color: var(--color-onyx);
+    color: var(--color-linen);
+  }
+}
+
+.summary {
+  @include down("laptop") {
+    display: none;
+  }
+}
+
+.summaryList {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  margin-top: -10px;
+}
+
+.thanks {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-onyx-10);
+  font-family: var(--ff-system);
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 28px;
+}

@@ -1,0 +1,17 @@
+@use "sass:math";
+
+@function rem($px, $base: 16) {
+  @return math.div($px, $base) * 1rem;
+}
+
+// Linear interpolation between $min and $max (px) across the $min-vw..$max-vw viewport range.
+@function fluid($min, $max, $min-vw: 375, $max-vw: 1440) {
+  $slope: math.div($max - $min, $max-vw - $min-vw);
+  $intercept: $min - $slope * $min-vw;
+
+  @return clamp(
+    #{rem($min)},
+    #{rem($intercept)} + #{$slope * 100}vw,
+    #{rem($max)}
+  );
+}

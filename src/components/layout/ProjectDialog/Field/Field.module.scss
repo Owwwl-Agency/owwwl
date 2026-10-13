@@ -1,0 +1,57 @@
+// Colors come from the form: --field-text, --field-label, --field-line, --field-line-active, --field-tracking.
+
+.field {
+  position: relative;
+  display: block;
+}
+
+.control {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  // The typed text sits where the label rests, 20px above the rule.
+  padding: 0 0 20px;
+  border: 0;
+  border-bottom: 1px solid var(--field-line);
+  border-radius: 0;
+  background: none;
+  outline: none;
+  font-family: var(--ff-system);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: var(--field-tracking);
+  color: var(--field-text);
+  resize: none;
+  field-sizing: content;
+  transition: border-color var(--duration-base) ease;
+
+  &:focus {
+    border-color: var(--field-line-active);
+  }
+
+  &:-webkit-autofill {
+    -webkit-text-fill-color: var(--field-text);
+    transition: background-color 99999s;
+  }
+}
+
+.label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: var(--ff-system);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: var(--field-tracking);
+  color: var(--field-label);
+  pointer-events: none;
+  transform-origin: 0 0;
+  transition: transform var(--duration-base) var(--ease-out-expo);
+}
+
+.control:focus + .label,
+.control:not(:placeholder-shown) + .label {
+  transform: translateY(-20px) scale(0.75);
+}

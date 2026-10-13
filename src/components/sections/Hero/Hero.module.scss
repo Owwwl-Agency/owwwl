@@ -1,0 +1,65 @@
+@use "abstracts" as *;
+
+.hero {
+  --card-ratio: 305 / 410;
+  // Card width that keeps the design grid composition (edge columns bleeding off screen).
+  --card-w-grid: clamp(13.75rem, 21.18vw, 26rem);
+  // Stacked over the title a card (plus caption) has to fit the height; on short screens the
+  // grid then scales up to --card-w-grid while spreading.
+  --card-w: min(var(--card-w-grid), 48.2svh * 305 / 410);
+}
+
+// Lets the timeline measure --card-w-grid in px.
+.gridProbe {
+  position: absolute;
+  width: var(--card-w-grid);
+  height: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.stage {
+  @include full-screen;
+
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 100vh;
+  height: 100svh;
+  padding: var(--header-height) var(--gutter);
+  overflow: clip;
+}
+
+.title {
+  @include hidden-before-reveal;
+
+  font-family: var(--ff-serif);
+  font-size: var(--fs-display);
+  font-weight: 500;
+  line-height: var(--lh-display);
+  color: var(--color-text);
+  text-align: center;
+}
+
+.line {
+  position: relative;
+  z-index: var(--layer);
+  display: block;
+  // Mask for the intro reveal: clip vertically only so italic overhangs stay visible.
+  overflow: visible clip;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.lineInner {
+  display: block;
+}
+
+.accent {
+  font-family: var(--ff-accent);
+  font-style: italic;
+  font-weight: 400;
+  // Moisette has taller metrics than New York; keep it from stretching the line box.
+  line-height: 0;
+  white-space: nowrap;
+}

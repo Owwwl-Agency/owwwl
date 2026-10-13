@@ -1,0 +1,38 @@
+@mixin hover {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @content;
+    }
+  }
+}
+
+// Elements animated in by GSAP start hidden only when motion is allowed.
+@mixin hidden-before-reveal {
+  @media (prefers-reduced-motion: no-preference) {
+    visibility: hidden;
+  }
+}
+
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
+
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@mixin full-screen {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+}
